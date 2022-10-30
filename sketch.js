@@ -44,32 +44,48 @@ class Person {
   }
 }
 
+// Sets up the spikes for our scene1
+function sceneOneSpikes() {
+  const context = canvas.getContext('2d');
+
+  let y = -50;
+  let x = -25;
+
+  for (let i = 0; i < 14; i++) {
+    context.beginPath();
+    context.strokeStyle = 'white';
+    context.moveTo(x, y);
+    context.lineTo(x + 30, y + 150);
+    context.lineTo(x + 60, y);
+    context.fill();
+    x += 60;
+  }
+
+  let lowerY = 850;
+  x = -25;
+
+  for (let i = 0; i < 14; i++) {
+    context.beginPath();
+    context.strokeStyle = 'white';
+    context.moveTo(x, lowerY);
+    context.lineTo(x + 30, lowerY - 150);
+    context.lineTo(x + 60, lowerY);
+    context.fill();
+    x += 60;
+  }
+}
+
 // Scene and sketch code
 // Scenes will transition based on time
 function setup() {
   createCanvas(800, 800);
   background(0);
+  sceneOneSpikes();
 }
 
 function draw() {
  
 
-}
-
-function sceneOneSpikes() {
-  const context = canvas.getContext('2d');
-
-
-  let y = -50;
-  let x = -25;
-  for (let i = 0; i < 11; i++) {
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(x + 25, y + 100);
-    context.lineTo(x + 50, y);
-    context.fill();
-    context.endPath();
-  }
 }
 
 
