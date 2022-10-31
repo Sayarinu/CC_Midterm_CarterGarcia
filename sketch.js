@@ -14,8 +14,8 @@ Requirements:
     **SHOULD BE GREATER THAN 100 LINES** ** INCLUDED **
 
   Explore:
-    Color, size, opacity
-    Collection of them are drawn, create patterns and textures
+    Color, size, opacity ** INCLUDED **
+    Collection of them are drawn, create patterns and textures ** INCLUDED **
   
   Sketch for this Drawing is in the PDF in the main of the project
 
