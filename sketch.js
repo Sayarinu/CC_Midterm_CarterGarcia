@@ -1,17 +1,17 @@
 /*
 Requirements:
   Must have:
-    Heavy use of variables
-    Custom functions passiong variables as parameters
-    loops
-    control sequences
-    math or random
-    some use of interaction or change over time
-    movement, change, variety
-    conditionals
-    OOP - Methods + passing parameters
+    Heavy use of variables ** INCLUDED **
+    Custom functions passiong variables as parameters ** INCLUDED **
+    loops ** INCLUDED ** 
+    control structures ** INCLUDED **
+    math or random ** INCLUDED **
+    some use of interaction or change over time ** INCLUDED **
+    movement, change, variety ** INCLUDED **
+    conditionals ** INCLUDED **
+    OOP - Methods + passing parameters ** INCLUDED **
 
-    **SHOULD BE GREATER THAN 100 LINES**
+    **SHOULD BE GREATER THAN 100 LINES** ** INCLUDED **
 
   Explore:
     Color, size, opacity
@@ -114,16 +114,16 @@ class SceneOneSpikes {
   constructor(x, y, lowerY, offset) {
     this.x = x;
     this.y = y;
-    this.lowerY = lowerY;
+    this.lowerY = lowerY;x
     this.offset = offset;
   }
   display() {
     const context = canvas.getContext('2d');
     context.fillStyle = 'white';
+    context.strokeStyle = 'white';
 
     for (let i = 0; i < 14; i++) {
       context.beginPath();
-      context.strokeStyle = 'white';
       context.moveTo(this.x, this.y);
       context.lineTo(this.x + 30, this.y + 150 + this.offset);
       context.lineTo(this.x + 60, this.y);
@@ -135,7 +135,6 @@ class SceneOneSpikes {
     
     for (let i = 0; i < 14; i++) {
       context.beginPath();
-      context.strokeStyle = 'white';
       context.moveTo(this.x, this.lowerY);
       context.lineTo(this.x + 30, this.lowerY - 150 - this.offset);
       context.lineTo(this.x + 60, this.lowerY);
@@ -159,11 +158,13 @@ Function Definitions:
 function sceneOne() {
   background(0);
   spikes.display();
-  if (millis() < 750) {
+  if (angle <= 44) {
     circularObject(person);
   } else {
-    fill(255, 0, 0, random(100, 200));
-    ellipse(400, 650, 100, 100);
+    let opacity = random(100, 200);
+    stroke(255, 0, 0, opacity);
+    fill(255, 0, 0, opacity);
+    ellipse(400, 600, 100, 100);
     lineFlurry();
   }
 /*
