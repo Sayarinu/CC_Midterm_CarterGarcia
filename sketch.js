@@ -28,19 +28,15 @@ Creative Coding Midterm Project
 Adjective: Abrasive
 */
 
-
 /*
-Class and Method Declarations:
+Globals:
 */
-
-
-// This will be the person in the drawing, they will have their dimensions set by the constructor
-// They will be represented as a circle in the drawing in an almost balloon like feel
-// Scared of being popped
 
 /*
 Class Definitions:
 */
+let posX, posY;
+
 
 class Gear { 
   constructor(x, y, size) {
@@ -60,6 +56,10 @@ class Gear {
   }
 }
 
+// This will be the person in the drawing, they will have their dimensions set by the constructor
+// They will be represented as a circle in the drawing in an almost balloon like feel
+// Scared of being popped
+
 class Person {
   constructor(x, y, size) {
     this.x = x;
@@ -74,7 +74,7 @@ class Person {
     
   }
 
-  updatePosition(x, y) {
+  update(x, y) {
     this.x += x;
     this.y += y;
   }
@@ -99,6 +99,7 @@ class SceneOneSpikes {
       context.lineTo(this.x + 30, this.y + 150 + this.offset);
       context.lineTo(this.x + 60, this.y);
       context.fill();
+      context.closePath();
       this.x += 60;
     }
 
@@ -110,6 +111,7 @@ class SceneOneSpikes {
       context.lineTo(this.x + 30, this.lowerY - 150 - this.offset);
       context.lineTo(this.x + 60, this.lowerY);
       context.fill();
+      context.closePath();
       this.x += 60;
     }
   }
@@ -124,14 +126,34 @@ class SceneOneSpikes {
 Function Definitions:
 */
 
-// Scene and sketch code
-// Scenes will transition based on time
+function drawLine(x1, y1, x2, y2, stroke, ctx) {
+  ctx.strokeStyle = 'red';
+  ctx.lineWidth = stroke;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
 
-/*
-Setup (Only used to create the canvas)
-*/
+function drawCircle(x1, y1, radius, stroke, ctx) {
+  ctx.strokeStyle = 'red';
+  ctx.lineWidth = stroke;
+  ctx.beginPath();
+  ctx.arc(x1, y1, radius, 0, 2 * Math.PI);
+  ctx.stroke();
+}
+
+function fillCircle(x, y, radius, ctx) {
+  ctx.fillStyle = 'red';
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.fill();
+}
+
 function setup() {
   createCanvas(800, 800);
+  posX = 1;
+  posY = 1;
 }
 
 /*
@@ -139,18 +161,14 @@ Draw loop of the project
 */
 
 function draw() {
+  // Code for Scene 1 of the project
   /*
   spikes = new SceneOneSpikes(-25, -50, 850, 0);
   balloon = new Person(60, 400, 75);
 
   background(0);
   balloon.display();
-  balloon.updatePosition(2, 0);
   spikes.display();
   */
- 
-  background(0);
-  gear = new Gear(800, 800, 800);
-  fill(255, 255, 255);
-  gear.display();
+  const ctx = canvas.getContext('2d');
 }
