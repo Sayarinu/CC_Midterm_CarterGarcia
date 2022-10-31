@@ -32,45 +32,44 @@ Adjective: Abrasive
 Globals:
 */
 let angle = 0;
-let explosion = [];
-let explosionPos = [];
-let explosionVel = [];
-let explosionAcc = [];
+
+let bits = []
+
+let positions = []
+let velocities = []
+let accelerations = []
 /*
 Class Definitions:
 */
 
-/*
-class Explosion {
+
+class Bit {
   constructor(position, velocity, acceleration) {
-    this.position = position; // Can do this.position.x or y to access values
+    this.position = position;
     this.velocity = velocity;
-    this.acceleration = acceleration;
-    this.maxspeed = 5;
+    this.acceleration = acceleration
+    this.maxspeed = 10;
   }
 
-  display() {
-    noStroke();
-    fill('red');
-    ellipse(this.position.x, this.position.y, 25, 25);
+  display(red, green, blue) {
+    stroke(0);
+    fill(red, green, blue);
+    if (this.position.y < 800) {
+      circle(this.position.x, this.position.y, 25);
+    } 
   }
 
   update() {
     this.position.add(this.velocity);
-    if ((this.position.x > width) || (this.position.x < 0)) {
-      this.velocity.x = -this.velocity.x;
-    }
-    if ((this.position.y > height) || (this.position.y < 0)) {
-      this.velocity.y = -this.velocity.y;
-    }
   }
 
   accelerate() {
-    this.velocity.mult(1.01);
+    this.velocity.mult(1.1);
     this.velocity.limit(this.maxspeed);
   }
 }
-*/
+
+
 
 class Saw { 
   constructor(x, y, size) {
@@ -119,29 +118,34 @@ class SceneOneSpikes {
   }
   display() {
     const context = canvas.getContext('2d');
-    context.fillStyle = 'white';
-    context.strokeStyle = 'white';
+    context.fillStyle = '#AAA9AD';
+    context.strokeStyle = '#AAA9AD';
 
     for (let i = 0; i < 14; i++) {
-      context.beginPath();
-      context.moveTo(this.x, this.y);
-      context.lineTo(this.x + 30, this.y + 150 + this.offset);
-      context.lineTo(this.x + 60, this.y);
-      context.fill();
+      if (i < 5 || i > 8) {
+        context.beginPath();
+        context.moveTo(this.x, this.y);
+        context.lineTo(this.x + 30, this.y + 150 + this.offset);
+        context.lineTo(this.x + 60, this.y);
+        context.fill();
+      }
       this.x += 60;
     }
 
     this.x = -25;
     
     for (let i = 0; i < 14; i++) {
-      context.beginPath();
-      context.moveTo(this.x, this.lowerY);
-      context.lineTo(this.x + 30, this.lowerY - 150 - this.offset);
-      context.lineTo(this.x + 60, this.lowerY);
-      context.fill();
+      if (i < 4 || i > 9) {
+        context.beginPath();
+        context.moveTo(this.x, this.lowerY);
+        context.lineTo(this.x + 30, this.lowerY - 150 - this.offset);
+        context.lineTo(this.x + 60, this.lowerY);
+        context.fill();
+      }
       this.x += 60;
     }
-
+    stroke(255, 255, 224);
+    fill(255,255,224);
     ellipse(400, 800, 300, 300);
   }
 
@@ -161,11 +165,23 @@ function sceneOne() {
   if (angle <= 44) {
     circularObject(person);
   } else {
-    let opacity = random(100, 200);
+    let opacity = random(200, 255);
     stroke(255, 0, 0, opacity);
     fill(255, 0, 0, opacity);
-    ellipse(400, 600, 100, 100);
-    lineFlurry();
+    if (millis() < 2000) {
+      ellipse(400, 600, 100, 100);
+      lineFlurry();
+    } else if (millis() < 5000 && millis() > 2000) {
+      ellipse(400 + (random(-10, 10)), 600 + random(-10, 10), 100, 100);
+      lineFlurry();
+    } else if (millis() > 5000 && millis() < 10000) {
+      for (let i = 0; i < 50; i += 1)  {
+        bits[i].update();
+        bits[i].display(random(0, 255), random(0, 25), random(0,25));
+      }
+    } else {
+      sceneTwo();
+    }
   }
 /*
   for (let i = 0; i < 100; i+= 1) {
@@ -173,6 +189,9 @@ function sceneOne() {
     explosion[i].display();
   }
 */
+}
+function sceneTwo() {
+  background(255);
 }
 
 function circularObject(obj) {
@@ -187,7 +206,7 @@ function circularObject(obj) {
 function lineFlurry() {
   const ctx = canvas.getContext('2d');
   // set line stroke and line width
-  ctx.strokeStyle = 'white';
+  ctx.strokeStyle = "#"+((1<<24)*Math.random()|0).toString(16);
   ctx.lineWidth = 5;
   
       // draw a red line
@@ -240,6 +259,11 @@ function setup() {
     explosion[i] = new Explosion(explosionPos[i], explosionVel[i], explosionAcc[i]);
   }
   */
+  for (let i = 0; i <= 50; i += 1) {
+    positions[i] = createVector(400, 650);
+    velocities[i] = createVector(random(-1, 1), -random(2, 5));
+    bits[i] = new Bit(positions[i], velocities[i], accelerations[i], red, green, blue);
+  }
 }
 
 
