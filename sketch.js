@@ -28,19 +28,15 @@ Creative Coding Midterm Project
 Adjective: Abrasive
 */
 
-/*
-Globals:
-*/
+// Globals:
+
 let angle = -180; // Starts the angle at -180 degrees for scene 1
-
 let bits = [] // array that holds the bit objects
-
 let positions = [] // holds the position of the bits
 let velocities = [] // holds the velocity of the bits
 let accelerations = [] // holds the acceleration of the bits
-/*
-Class Definitions:
-*/
+
+// Class Definitions:
 
 // The bits that explode when the ball does
 class Bit {
@@ -72,7 +68,6 @@ class Bit {
 // This will be the person in the drawing, they will have their dimensions set by the constructor
 // They will be represented as a circle in the drawing in an almost balloon like feel
 // Scared of being popped
-
 class Person { // orb object in scene 1, will have functionality in some of the other scenes
   constructor(x, y, size) { // Constructor with size and position
     this.x = x;
@@ -88,8 +83,8 @@ class Person { // orb object in scene 1, will have functionality in some of the 
   }
 }
 
-// Class to define the spikes on the first scene (this does most of the work)
-class SceneOneSpikes { // Creates spikes on the bottom and the saw object for scene 1
+// Creates spikes on the bottom and the saw object for scene 1
+class SceneOneSpikes { 
   constructor(x, y, lowerY, offset) {
     this.x = x;
     this.y = y;
@@ -135,11 +130,10 @@ class SceneOneSpikes { // Creates spikes on the bottom and the saw object for sc
 
 }
 
-/*
-Function Definitions:
-*/
+//Function Definitions:
 
-function sceneOne() { // Does the code for scene one
+// Does the code for scene one
+function sceneOne() { 
   background(0);
   spikes.display();
   if (angle <= 44) {
@@ -165,11 +159,13 @@ function sceneOne() { // Does the code for scene one
   }
 }
 
-function sceneTwo() { // Code for scene two
+// Code for scene two
+function sceneTwo() { 
   background(255);
 }
 
-function sceneThree() { // Code for scene three
+// Code for scene three
+function sceneThree() { 
 
 }
 
@@ -199,6 +195,7 @@ function lineFlurry() { // Flurry of lines for scene 1
     ctx.closePath();
   }
 }
+
 // Globally initialized Objects for scene 1
 person = new Person(100, 100, 100);
 spikes = new SceneOneSpikes(-25, -50, 850, 0);
@@ -217,11 +214,7 @@ function setup() {
   }
 }
 
-
-/*
-Draw loop of the project
-*/
-
+//Draw loop of the project
 function draw() { 
   // Code for Scene 1 of the project
   sceneOne(); // Calls Scene One
