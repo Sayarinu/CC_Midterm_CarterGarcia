@@ -36,7 +36,41 @@ let positions = [] // holds the position of the bits
 let velocities = [] // holds the velocity of the bits
 let accelerations = [] // holds the acceleration of the bits
 
+//Globals for Waves:
+let space = 16; // Spaces between the x values
+let waveWidth; // Width of the entire wave
+let waveAngle = 0.0; // Angle for the waves (used for sin)
+let amplitude = 25.0; // wave amplitude
+let period = 400; // Wave period
+let dx; // Change in X
+let yVals = []
+
 // Class Definitions:
+
+class Waves {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  display() {
+    noStroke();
+    fill(255);
+    for (let x = 0; x < floor(waveWidth / space); x++) {
+      yVals[i] = sin(x) * amplitude;
+      x += dx
+    }
+  }
+
+  calcWave() {
+    waveAngle += 0.02;
+    let x = waveAngle;
+    for (let i = 0; i < floor(waveWidth / space); i++) {
+      yVals[i] = sin(x) * amplitude;
+      x += dx;
+    }
+  }
+}
 
 // The bits that explode when the ball does
 class Bit {
@@ -52,7 +86,7 @@ class Bit {
     fill(red, green, blue); // fills in the passed colors
     if (this.position.y < 800) { // when they go off screen stop making them
       circle(this.position.x, this.position.y, 25);
-    } 
+    }
   }
 
   update() { // add the velocity vector to create speed
@@ -153,15 +187,15 @@ function sceneOne() {
         bits[i].update();
         bits[i].display(random(0, 255), random(0, 25), random(0,25));
       }
-    } else {
-      sceneTwo();
     }
   }
 }
 
 // Code for scene two
 function sceneTwo() { 
-  background(255);
+  background(0);
+  calcWave(waveOne);
+  renderWave(waveOne);
 }
 
 // Code for scene three
@@ -199,6 +233,7 @@ function lineFlurry() { // Flurry of lines for scene 1
 // Globally initialized Objects for scene 1
 person = new Person(100, 100, 100);
 spikes = new SceneOneSpikes(-25, -50, 850, 0);
+waveOne = new Waves(0, 400);
 
 // Setup function
 function setup() { 
@@ -212,10 +247,17 @@ function setup() {
     // Creates the new bit object and stores it in the array
     bits[i] = new Bit(positions[i], velocities[i], accelerations[i], red, green, blue); 
   }
+  waveWidth = width + 16;
+  dx = ((2 * Math.PI / period) * space);
+  
 }
 
 //Draw loop of the project
 function draw() { 
   // Code for Scene 1 of the project
-  sceneOne(); // Calls Scene One
+  if (millis() < 13000) {
+    sceneOne(); // Calls Scene One
+  } else {
+    sceneTwo();
+  }
 }
