@@ -30,46 +30,61 @@ Adjective: Abrasive
 
 // Globals:
 
+let r;
+
+// Explosion of balls (bits)
 let angle = -180; // Starts the angle at -180 degrees for scene 1
 let bits = [] // array that holds the bit objects
 let positions = [] // holds the position of the bits
 let velocities = [] // holds the velocity of the bits
 let accelerations = [] // holds the acceleration of the bits
 
-//Globals for Waves:
-let space = 16; // Spaces between the x values
-let waveWidth; // Width of the entire wave
-let waveAngle = 0.0; // Angle for the waves (used for sin)
-let amplitude = 25.0; // wave amplitude
-let period = 400; // Wave period
-let dx; // Change in X
-let yVals = []
+// Sinusoidal orbs eminating
+let particles = []
+let particlePos = []
+let xPosWave;
+let yPosWave;
 
 // Class Definitions:
 
 class Waves {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
+  constructor(position, offset) {
+    this.position = position;
+    this.offset = offset;
   }
 
-  display() {
-    noStroke();
-    fill(255);
-    for (let x = 0; x < floor(waveWidth / space); x++) {
-      yVals[i] = sin(x) * amplitude;
-      x += dx
+  display(r, g, b, o) {
+    translate(this.position.x, this.position.y);
+    fill(r, g, b);
+    stroke(r, g, b);
+    beginShape();
+      for (let i = 0; i < 359; i++) {
+        let r1Min = map(sin(frameCount * this.offset), -1, 1, 10, 20 + 4 * this.offset);
+        let r1Max = map(sin(frameCount * 2), -1, 1, 10, 0);
+
+        let r2Min = map(sin(frameCount / this.offset), -1, 1, 20 + 4 * this.offset, 10);
+        let r2Max = map(sin(frameCount), -1, 1, 0, 10);
+
+        let r1 = map(sin(i * 3), -1, 1, r1Min, r1Max);
+        let r2 = map(sin(i * 6 + 90), -1, 1, r2Min, r2Max);
+
+        let r = r1 + r2;
+        let x = r * cos(i);
+        let y = r * sin(i);
+        vertex(x, y);
+      }
+    endShape();
+    translate(-1 * this.position.x, -1 * this.position.y);
+  }
+
+  update() { // add the velocity vector to create speed
+    if (this.position.x < 400) {
+      this.position.add(createVector(-.3, -.5));
+    } else {
+      this.position.add(createVector(.3, -.5));
     }
   }
 
-  calcWave() {
-    waveAngle += 0.02;
-    let x = waveAngle;
-    for (let i = 0; i < floor(waveWidth / space); i++) {
-      yVals[i] = sin(x) * amplitude;
-      x += dx;
-    }
-  }
 }
 
 // The bits that explode when the ball does
@@ -78,7 +93,6 @@ class Bit {
     this.position = position;
     this.velocity = velocity;
     this.acceleration = acceleration
-    this.maxspeed = 10;
   }
 
   display(red, green, blue) { // Display function passed colors to create the color of the image we want
@@ -95,7 +109,6 @@ class Bit {
 
   accelerate() { // accelerate as they go
     this.velocity.mult(1.1);
-    this.velocity.limit(this.maxspeed);
   }
 }
 
@@ -113,7 +126,9 @@ class Person { // orb object in scene 1, will have functionality in some of the 
     fill('red');
     stroke('red');
     ellipse(this.x, this.y, this.size);
-    
+  }
+  update() {
+    return this.y - 0.5;
   }
 }
 
@@ -193,14 +208,36 @@ function sceneOne() {
 
 // Code for scene two
 function sceneTwo() { 
-  background(0);
-  calcWave(waveOne);
-  renderWave(waveOne);
+  background(30);
+  stroke(255);
+  noFill();
+  for (let i = 0; i <= 10; i++) {
+    particles[i].update();
+    particles[i].display(random(0, 255), random(0, 255), random(0,255), random(0, 255));
+  }
+  abrasivePerson.display();
+  if (abrasivePerson.update() > 400) {
+    abrasivePerson = new Person(400, abrasivePerson.update(), 100);
+  } else if (millis() < 30000) {
+    ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
+  } else if (millis() < 35000) {
+    ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
+    if (r >= 100 && r <= 500) {
+      drawCircle();
+    } else {
+      r = 100;
+    }
+  } else if (millis() < 35050 && r > 100 && millis() > 35000) {
+    r = 100;
+  } else {
+    ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
+    drawCircle();
+  }
 }
 
 // Code for scene three
 function sceneThree() { 
-
+  background(255);
 }
 
 // Moves the object in the circle no matter what object it is   
@@ -229,11 +266,19 @@ function lineFlurry() { // Flurry of lines for scene 1
     ctx.closePath();
   }
 }
+function drawCircle() {
+  stroke(255, 0, 0);
+  noFill();
+  circle(400, 400, r);
+  r += 4;
+}
 
 // Globally initialized Objects for scene 1
 person = new Person(100, 100, 100);
 spikes = new SceneOneSpikes(-25, -50, 850, 0);
-waveOne = new Waves(0, 400);
+
+// Person for scene 2;
+abrasivePerson = new Person(400, 800, 100);
 
 // Setup function
 function setup() { 
@@ -241,15 +286,17 @@ function setup() {
   angleMode(DEGREES); // Sets our angles to degrees for easier math
   background(0);
 
-  for (let i = 0; i <= 50; i += 1) { // Fills our arrays of bits
+  for (let i = 0; i <= 50; i++) { // Fills our arrays of bits
     positions[i] = createVector(400, 650); // Creates the spawn point of the balls
     velocities[i] = createVector(random(-1, 1), -random(2, 5)); // Makes them move upward in a cone
     // Creates the new bit object and stores it in the array
-    bits[i] = new Bit(positions[i], velocities[i], accelerations[i], red, green, blue); 
+    bits[i] = new Bit(positions[i], velocities[i], accelerations[i], red, green, blue);
   }
-  waveWidth = width + 16;
-  dx = ((2 * Math.PI / period) * space);
-  
+  for (let i = 0; i <= 10; i++) {
+    particlePos[i] = createVector(random(200, 600), random(600, 700));
+    particles[i] = new Waves(particlePos[i], random(2, 12));
+  }
+  r = 100;
 }
 
 //Draw loop of the project
@@ -257,7 +304,9 @@ function draw() {
   // Code for Scene 1 of the project
   if (millis() < 13000) {
     sceneOne(); // Calls Scene One
-  } else {
+  } else if (millis() > 13000 && r < 1000) {
     sceneTwo();
+  } else {
+    sceneThree();
   }
 }
