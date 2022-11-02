@@ -257,7 +257,7 @@ function lineFlurry() { // Flurry of lines for scene 1
   ctx.strokeStyle = "#"+((1<<24)*Math.random()|0).toString(16);
   ctx.lineWidth = 5;
   
-  // draw a red line
+  // draw a random color line
   for (let i = 0; i < 10; i++) {
     ctx.beginPath();
     ctx.moveTo(400, 650);
@@ -266,6 +266,7 @@ function lineFlurry() { // Flurry of lines for scene 1
     ctx.closePath();
   }
 }
+
 function drawCircle() {
   stroke(255, 0, 0);
   noFill();
