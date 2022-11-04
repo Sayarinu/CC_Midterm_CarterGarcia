@@ -132,6 +132,16 @@ class Person { // orb object in scene 1, will have functionality in some of the 
   }
 }
 
+
+
+
+
+
+
+
+
+
+
 // Creates spikes on the bottom and the saw object for scene 1
 class SceneOneSpikes { 
   constructor(x, y, lowerY, offset) {
