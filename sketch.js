@@ -213,7 +213,7 @@ function sceneTwo() {
   noFill();
   for (let i = 0; i <= 10; i++) {
     particles[i].update();
-    particles[i].display(random(0, 255), random(0, 255), random(0,255), random(0, 255));
+    particles[i].display(0, 0, random(0,255), random(0, 255));
   }
   abrasivePerson.display();
   if (abrasivePerson.update() > 400) {
