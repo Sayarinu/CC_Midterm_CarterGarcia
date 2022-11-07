@@ -204,7 +204,7 @@ class SceneOneSpikes {
 //Function Definitions:
 
 // Does the code for scene one
-function sceneOne() { 
+function sceneThree() { 
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#AAA9AD';
   ctx.strokeStyle = '#AAA9AD';
@@ -290,7 +290,7 @@ function sceneTwo() {
 }
 
 // Code for scene three
-function sceneThree() { 
+function sceneOne() { 
   background(255);
 }
 
