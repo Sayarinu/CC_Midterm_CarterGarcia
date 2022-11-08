@@ -30,14 +30,14 @@ Adjective: Abrasive
 
 // Globals:
 
-let r;
-let horizX, horizY;
-let circSize;
-let circHeight;
-let fallingHeight;
-let fade;
-let timeFade;
-let opacity;
+let r; // radius of circle in scene 2
+let horizX, horizY; // horizontal x and y for the spikes
+let circHeight; // Determines the height of our circle
+let fallingHeight; // Our falling height
+let timeFade; // Time to fade variable
+let opacity; // Opacity variable
+let looptime = 0; // Helps us loop
+let timer = 0; // Timer
 
 
 // Explosion of balls (bits)
@@ -48,25 +48,23 @@ let velocities = [] // holds the velocity of the bits
 let accelerations = [] // holds the acceleration of the bits
 
 // Sinusoidal orbs eminating
-let particles = []
-let particlePos = []
-let xPosWave;
-let yPosWave;
+let particles = [] // creates our particle waves
+let particlePos = [] // creates our particlePos
 
 // Class Definitions:
 
 class Waves {
-  constructor(position, offset) {
+  constructor(position, offset) { // Constructor
     this.position = position;
     this.offset = offset;
   }
 
-  display(r, g, b, o) {
+  display(r, g, b, o) { // Display Function
     translate(this.position.x, this.position.y);
     noFill();
     stroke(r, g, b);
     beginShape();
-      for (let i = 0; i < 359; i++) {
+      for (let i = 0; i < 359; i++) { // Makes them fluctuate at random intervals
         let r1Min = map(sin(frameCount * this.offset), -1, 1, 10, 20 + 4 * this.offset);
         let r1Max = map(sin(frameCount * 2), -1, 1, 10, 0);
 
@@ -86,14 +84,14 @@ class Waves {
   }
 
   update() { // add the velocity vector to create speed
-    if (millis() < 30000) {
+    if ((timer - looptime) < 30000) {
       if (this.position.x < 400 && this.position.x > 200)  {
         this.position.add(createVector(-.3, -.75));
       } else if (this.position.x > 400 && this.position.x < 600){
         this.position.add(createVector(.3, -.75));
       }
     } 
-    else if (millis() > 30000 && r < 1800) {
+    else if ((timer - looptime) > 30000 && r < 1800) { // Moves them after a timer when the ball starts shaking
       if (this.position.x < 400 && this.position.y < 400)  {
         this.position.add(createVector(-.4, -.5));        
       } else if (this.position.x < 400 && this.position.y > 400) {
@@ -147,31 +145,32 @@ class Person { // orb object in scene 1, will have functionality in some of the 
     stroke('red');
     ellipse(this.x, this.y, this.size);
   }
-  update() {
+  update() { // Updates our location
     let result;
     if (this.y > 400) {
       result = this.y - 0.5;
-    } else if (millis() > 39000 && r == 100) {
+    } else if ((timer - looptime) > 39000 && r == 100) { // Scene two condition
       result = this.y + 0.5;
     }
-    return result;
+    return result; // returns this offset change
   }
 }
 
-// Creates spikes on the bottom and the saw object for scene 1
-class SceneOneSpikes { 
-  constructor(x, y, lowerY, offset) {
+// Creates spikes on the bottom and the saw object for scene three
+class SceneThreeSpikes {  // Sets our spikes for scene three
+  constructor(x, y, lowerY) { // Constructor
     this.x = x;
     this.y = y;
     this.lowerY = lowerY;x
-    this.offset = offset;
   }
   display() {
-    const context = canvas.getContext('2d');
-    context.fillStyle = '#AAA9AD';
-    context.strokeStyle = '#AAA9AD';
+    background(0);
+    const context = canvas.getContext('2d'); // create a new context
+    // random stroke and fill color
+    context.fillStyle = "#"+((1<<24)*Math.random()|0).toString(16);
+    context.strokeStyle = "#"+((1<<24)*Math.random()|0).toString(16);
 
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 14; i++) { // top spikes (don't fully show)
       if (i < 5 || i > 8) {
         context.beginPath();
         context.moveTo(this.x, this.y);
@@ -184,7 +183,7 @@ class SceneOneSpikes {
 
     this.x = -25;
     
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 14; i++) { // bottom Spikes
       if (i < 4 || i > 9) {
         context.beginPath();
         context.moveTo(this.x, this.lowerY);
@@ -194,62 +193,54 @@ class SceneOneSpikes {
       }
       this.x += 60;
     }
-    stroke(255, 255, 224);
-    fill(255,255,224);
+    horizX = 0;
+    horizY = 0;
+    for (let i = 0; i < 14; i++) { // Side Spikes
+      context.beginPath();
+      context.moveTo(horizX, horizY);
+      context.lineTo(horizX + 150, horizY + 30);
+      context.lineTo(horizX, horizY + 60)
+      context.fill();
+      context.closePath();
+      horizX = width; // Does right side now
+      context.beginPath();
+      context.moveTo(horizX, horizY);
+      context.lineTo(horizX - 150, horizY + 30);
+      context.lineTo(horizX, horizY + 60)
+      context.fill();
+      context.closePath();
+      horizX = 0;
+      horizY += 60;
+    }
+    stroke(random(255), random(255), random(255));
+    fill(random(255), random(255), random(255));
+    // Creates a saw with random color
     ellipse(400, 800, 300, 300);
   }
-
-  updateOffset(newOffset) {
-    this.offset = newOffset;
-  }
-
 }
 
 //Function Definitions:
 
-// Does the code for scene one
+// Does the code for scene three
 function sceneThree() { 
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#AAA9AD';
-  ctx.strokeStyle = '#AAA9AD';
-  background(0);
-  spikes.display();
-  horizX = 0;
-  horizY = 0;
-  for (let i = 0; i < 14; i++) {
-    ctx.beginPath();
-    ctx.moveTo(horizX, horizY);
-    ctx.lineTo(horizX + 150, horizY + 30);
-    ctx.lineTo(horizX, horizY + 60)
-    ctx.fill();
-    ctx.closePath();
-    horizX = 800;
-    ctx.beginPath();
-    ctx.moveTo(horizX, horizY);
-    ctx.lineTo(horizX - 150, horizY + 30);
-    ctx.lineTo(horizX, horizY + 60)
-    ctx.fill();
-    ctx.closePath();
-    horizX = 0;
-    horizY += 60;
-  }
-  if (fallingHeight < 600) {
+  spikes.display(); // Sets our spikes
+  if (fallingHeight < 600) { // Checks if it has fallen onto the saw, if not move the circle down
     fill('red');
     stroke(0);
     circle(400, fallingHeight, 100);
     lineFlurry(20, 0, width, 0, height, 400, fallingHeight);
     fallingHeight += 5;
-  } else {
-    let opacity = random(200, 255);
-    stroke(255, 0, 0, opacity);
-    fill(255, 0, 0, opacity);
-    if (millis() < 53000) {
+  } else { // If on the saw
+    let opacity = random(200, 255); // fluctuate opacity
+    stroke(255, 0, 0, opacity); // sets stroke
+    fill(255, 0, 0, opacity); // sets fill
+    if ((timer - looptime) < 53000) { // Until 53000 total millis() we will shake and shoot lines
       ellipse(400, 600, 100, 100);
       lineFlurry(10, 200, 600, 300, 600, 400, 650);
-    } else if (millis() < 56000 && millis() > 53000) {
+    } else if ((timer - looptime) < 56000 && (timer - looptime) > 53000) {
       ellipse(400 + (random(-10, 10)), 600 + random(-10, 10), 100, 100);
       lineFlurry(10, 200, 600, 300, 600, 400, 650);
-    } else if (millis() > 56000 && millis() < 61000) {
+    } else if ((timer - looptime) > 56000 && (timer - looptime) < 61000) { // We will burst into our bits and the person will be cut up
       for (let i = 0; i < 50; i += 1)  {
         bits[i].update();
         bits[i].display(random(0, 255), random(0, 25), random(0,25));
@@ -270,11 +261,11 @@ function sceneTwo() {
   if (abrasivePerson.update() > 400) {
     abrasivePerson.display();
     abrasivePerson = new Person(400, abrasivePerson.update(), 100);
-  } else if (millis() < 30000) {
+  } else if ((timer - looptime) < 30000) {
     stroke('red');
     fill('red');
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100); // sphere begins to shake
-  } else if (millis() < 35000) {
+  } else if ((timer - looptime) < 35000) {
     stroke('red');
     fill('red');
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
@@ -284,12 +275,12 @@ function sceneTwo() {
     } else {
       r = 100;
     }
-  } else if (millis() < 35050 && r > 100 && millis() > 35000) {
+  } else if ((timer - looptime) < 35050 && r > 100 && (timer - looptime) > 35000) {
     r = 100;
-  } else if (millis() > 35000 && r < 1800 && millis() < 39000){
+  } else if ((timer - looptime) > 35000 && r < 1800 && (timer - looptime) < 39000){
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
     drawCircle();
-  } else if (millis() > 39000 && r != 100) {
+  } else if ((timer - looptime) > 39000 && r != 100) {
     drawCircle();
   } else {
     fill('red');
@@ -299,13 +290,13 @@ function sceneTwo() {
   }
 }
 
-// Code for scene three
+// Code for scene one
 function sceneOne() { 
   background(random(30));
-  if (millis() < 13000) {
+  if ((timer - looptime) < 13000) {
     fill(255, 0, 0, 255);
     circle(400, 400, 100);
-    if (millis() - 1000 > timeFade) {
+    if ((timer - looptime) - 1000 > timeFade) {
       timeFade += 1000;
     }
     for (let i = 0; i < 100; i++) {
@@ -319,8 +310,11 @@ function sceneOne() {
   }
 }
 
-// Moves the object in the circle no matter what object it is   
-//(passed any object with a display fucntion)
+
+
+// Moves the object in the circle no matter what object it is
+// passed any object with a display fucntion 
+// No Longer used in project
 function circularObject(obj) { 
   translate(400, 470);
   stroke(255);
@@ -334,7 +328,7 @@ function lineFlurry(amount, xMin, xMax, yMin, yMax, locationX, locationY) { // F
   const ctx = canvas.getContext('2d');
   ctx.lineWidth = 5;
   // set line stroke and line width
-  if (r == 100) {
+  if (r == 100) { // Determines if we want random colors
     ctx.strokeStyle = "#"+((1<<24)*Math.random()|0).toString(16);
       
     // draw a random color line
@@ -345,28 +339,28 @@ function lineFlurry(amount, xMin, xMax, yMin, yMax, locationX, locationY) { // F
       ctx.stroke();
       ctx.closePath();
     }
-  } else {
+  } else { // Just red lines for scene two
     ctx.strokeStyle = 'red';
     for (let i = 0; i < amount; i++) {
       ctx.beginPath();
       ctx.moveTo(locationX, locationY);
-      ctx.lineTo(random(400 - r/2, 400 + r/2), random(400 - r/2, 400 + r/2));
+      ctx.lineTo(random(locationX - r/2, locationX + r/2), random(locationY - r/2, locationY + r/2));
       ctx.stroke();
       ctx.closePath();
     }
   }
 }
 
-function drawCircle() {
-  stroke(255, 0, 0);
-  if (millis() < 35050) {
+function drawCircle() { // Draws a circle and exapnds its width
+  stroke(255, 0, 0); // Sets our red color stroke
+  if ((timer - looptime) < 35050) { // Determines whether to fill or not to fill the circle
     noFill();
   }
   else {
-    fill('red');
+    fill('red'); 
   }
   circle(400, 400, r);
-  if (millis() < 39000) {
+  if ((timer - looptime) < 39500) {  // Expands or shrinks the r value
     r += 4;
   } else {
     r -= 4;
@@ -375,49 +369,58 @@ function drawCircle() {
 
 // resets our variables for the loop
 function resetVars() {
+  // Sets our initialized Values for our global variables to make our functions work correctly
   r = 100;
   circHeight = 400;
-  circSize = 100;
   fallingHeight = 0;
   fade = 255;
   timeFade = 0;
   opacity = 255;
-}
+  stroke(0,120);
+  // End setting constants
+  const c = canvas.getContext('2d'); // Gets a 2d context to reset our line width
+  c.lineWidth = 1;
 
-// Globally initialized Objects for scene 1
-person = new Person(100, 100, 100);
-spikes = new SceneOneSpikes(-25, -50, 850, 0);
-
-// Person for scene 2;
-abrasivePerson = new Person(400, 800, 100);
-
-// Setup function
-function setup() { 
-  createCanvas(800, 800); // Canvas size is 800 x 800
-  angleMode(DEGREES); // Sets our angles to degrees for easier math
-  background(0);
-
+  // Reset our class objects
+  // Globally initialized Objects for scene 1
+  person = new Person(100, 100, 100);
+  spikes = new SceneThreeSpikes(-25, -50, 850);
+  
+  // Person for scene 2;
+  abrasivePerson = new Person(400, 800, 100);
+  
   for (let i = 0; i <= 50; i++) { // Fills our arrays of bits
     positions[i] = createVector(400, 650); // Creates the spawn point of the balls
     velocities[i] = createVector(random(-1, 1), -random(2, 5)); // Makes them move upward in a cone
     // Creates the new bit object and stores it in the array
     bits[i] = new Bit(positions[i], velocities[i], accelerations[i], red, green, blue);
   }
+
   for (let i = 0; i <= 10; i++) {
     particlePos[i] = createVector(random(200, 600), random(600, 700));
     particles[i] = new Waves(particlePos[i], random(2, 12));
   }
+}
+
+// Setup function
+function setup() { 
+  createCanvas(800, 800); // Canvas size is 800 x 800
+  angleMode(DEGREES); // Sets our angles to degrees for easier math
+  background(0);
   resetVars();
 }
 
 //Draw loop of the project
 function draw() { 
-  // Code for Scene 1 of the project
-  if (millis() < 13000) {
+  timer = millis();
+  if (timer - looptime < 13000) {
     sceneOne(); // Calls Scene One
-  } else if (millis() > 13000 && circHeight != 800) {
-    sceneTwo();
-  } else if (circHeight == 800 && millis() < 65000) {
-    sceneThree();
+  } else if ((timer - looptime) > 13000 && circHeight != 800) {
+    sceneTwo(); // Calls Scene Two
+  } else if (circHeight == 800 && (timer - looptime) < 61500) {
+    sceneThree(); // Calls Scene Three
+  } else { // Loops back through
+    resetVars(); // Resets our variables
+    looptime += 61550; // Changes our loop time to work with the loop
   }
 }
