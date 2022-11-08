@@ -35,6 +35,7 @@ let horizX, horizY;
 let circSize;
 let circHeight;
 let fallingHeight;
+let fade;
 
 // Explosion of balls (bits)
 let angle = -180; // Starts the angle at -180 degrees for scene 1
@@ -238,13 +239,13 @@ function sceneThree() {
     let opacity = random(200, 255);
     stroke(255, 0, 0, opacity);
     fill(255, 0, 0, opacity);
-    if (millis() < 5000) {
+    if (millis() < 53000) {
       ellipse(400, 600, 100, 100);
-      lineFlurry();
-    } else if (millis() < 8000 && millis() > 5000) {
+      lineFlurry(10, 200, 600, 300, 600, 400, 650);
+    } else if (millis() < 56000 && millis() > 53000) {
       ellipse(400 + (random(-10, 10)), 600 + random(-10, 10), 100, 100);
-      lineFlurry();
-    } else if (millis() > 8000 && millis() < 13000) {
+      lineFlurry(10, 200, 600, 300, 600, 400, 650);
+    } else if (millis() > 56000 && millis() < 61000) {
       for (let i = 0; i < 50; i += 1)  {
         bits[i].update();
         bits[i].display(random(0, 255), random(0, 25), random(0,25));
@@ -262,8 +263,8 @@ function sceneTwo() {
     particles[i].update();
     particles[i].display(0, 0, random(0,255), random(0, 255));
   }
-  abrasivePerson.display();
   if (abrasivePerson.update() > 400) {
+    abrasivePerson.display();
     abrasivePerson = new Person(400, abrasivePerson.update(), 100);
   } else if (millis() < 30000) {
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100); // sphere begins to shake
@@ -282,16 +283,33 @@ function sceneTwo() {
   } else if (millis() > 39000 && r != 100) {
     drawCircle();
   } else {
-    background(30);
     fill('red');
     circle(400, circHeight, 100);
+    lineFlurry(20, 0, width, 0, height, 400, circHeight);
     circHeight += 1;
   }
 }
 
 // Code for scene three
 function sceneOne() { 
-  background(255);
+  background(random(30));
+  if (millis() < 13000) {
+    for (let i = 0; i < 100; i++) {
+      if (random(0, 50) < 25) {
+        noFill();
+      } else {
+        if (millis() < 9000) {
+          fill(random(255), random(255), random(255));
+        }
+        else if (millis() < 11000) {
+          fill(random(255), random(255), random(255), random(100, 200)); 
+        } else if (millis() < 12500) {
+          fill(random(255), random(255), random(255), random(0, 100)); 
+        }
+      }
+      triangle(random(width), random(height), random(width), random(height), random(width), random(height));
+    }
+  }
 }
 
 // Moves the object in the circle no matter what object it is   
@@ -305,17 +323,17 @@ function circularObject(obj) {
   angle += 1;
 }
 
-function lineFlurry() { // Flurry of lines for scene 1
+function lineFlurry(amount, xMin, xMax, yMin, yMax, locationX, locationY) { // Flurry of lines for scene 1
   const ctx = canvas.getContext('2d');
   // set line stroke and line width
   ctx.strokeStyle = "#"+((1<<24)*Math.random()|0).toString(16);
   ctx.lineWidth = 5;
   
   // draw a random color line
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < amount; i++) {
     ctx.beginPath();
-    ctx.moveTo(400, 650);
-    ctx.lineTo(random(200, 600), random(300, 600));
+    ctx.moveTo(locationX, locationY);
+    ctx.lineTo(random(xMin, xMax), random(yMin, yMax));
     ctx.stroke();
     ctx.closePath();
   }
@@ -343,6 +361,7 @@ function resetVars() {
   circHeight = 400;
   circSize = 100;
   fallingHeight = 0;
+  fade = 255;
 }
 
 // Globally initialized Objects for scene 1
@@ -378,7 +397,7 @@ function draw() {
     sceneOne(); // Calls Scene One
   } else if (millis() > 13000 && circHeight != 800) {
     sceneTwo();
-  } else {
+  } else if (circHeight == 800 && millis() < 65000) {
     sceneThree();
   }
 }
