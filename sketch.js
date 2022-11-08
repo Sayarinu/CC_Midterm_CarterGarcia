@@ -38,6 +38,8 @@ let timeFade; // Time to fade variable
 let opacity; // Opacity variable
 let looptime = 0; // Helps us loop
 let timer = 0; // Timer
+let fadeOut; // Fades out at the end
+let fillBool; // Determines if we fill our circle or not
 
 
 // Explosion of balls (bits)
@@ -84,14 +86,14 @@ class Waves {
   }
 
   update() { // add the velocity vector to create speed
-    if ((timer - looptime) < 30000) {
+    if ((timer - looptime) < 32000) {
       if (this.position.x < 400 && this.position.x > 200)  {
         this.position.add(createVector(-.3, -.75));
       } else if (this.position.x > 400 && this.position.x < 600){
         this.position.add(createVector(.3, -.75));
       }
     } 
-    else if ((timer - looptime) > 30000 && r < 1800) { // Moves them after a timer when the ball starts shaking
+    else if ((timer - looptime) > 32000 && r < 1800) { // Moves them after a timer when the ball starts shaking
       if (this.position.x < 400 && this.position.y < 400)  {
         this.position.add(createVector(-.4, -.5));        
       } else if (this.position.x < 400 && this.position.y > 400) {
@@ -161,7 +163,7 @@ class SceneThreeSpikes {  // Sets our spikes for scene three
   constructor(x, y, lowerY) { // Constructor
     this.x = x;
     this.y = y;
-    this.lowerY = lowerY;x
+    this.lowerY = lowerY;
   }
   display() {
     background(0);
@@ -222,30 +224,37 @@ class SceneThreeSpikes {  // Sets our spikes for scene three
 //Function Definitions:
 
 // Does the code for scene three
-function sceneThree() { 
-  spikes.display(); // Sets our spikes
-  if (fallingHeight < 600) { // Checks if it has fallen onto the saw, if not move the circle down
-    fill('red');
-    stroke(0);
-    circle(400, fallingHeight, 100);
-    lineFlurry(20, 0, width, 0, height, 400, fallingHeight);
-    fallingHeight += 5;
-  } else { // If on the saw
-    let opacity = random(200, 255); // fluctuate opacity
-    stroke(255, 0, 0, opacity); // sets stroke
-    fill(255, 0, 0, opacity); // sets fill
-    if ((timer - looptime) < 53000) { // Until 53000 total millis() we will shake and shoot lines
-      ellipse(400, 600, 100, 100);
-      lineFlurry(10, 200, 600, 300, 600, 400, 650);
-    } else if ((timer - looptime) < 56000 && (timer - looptime) > 53000) {
-      ellipse(400 + (random(-10, 10)), 600 + random(-10, 10), 100, 100);
-      lineFlurry(10, 200, 600, 300, 600, 400, 650);
-    } else if ((timer - looptime) > 56000 && (timer - looptime) < 61000) { // We will burst into our bits and the person will be cut up
-      for (let i = 0; i < 50; i += 1)  {
-        bits[i].update();
-        bits[i].display(random(0, 255), random(0, 25), random(0,25));
+function sceneThree() {
+  if (timer < 63000) {
+    spikes.display(); // Sets our spikes
+    if (fallingHeight < 600) { // Checks if it has fallen onto the saw, if not move the circle down
+      fill('red');
+      stroke(0);
+      circle(400, fallingHeight, 100);
+      lineFlurry(20, 0, width, 0, height, 400, fallingHeight);
+      fallingHeight += 5;
+    } else { // If on the saw
+      let opacity = random(200, 255); // fluctuate opacity
+      stroke(255, 0, 0, opacity); // sets stroke
+      fill(255, 0, 0, opacity); // sets fill
+      if ((timer - looptime) < 55000) { // Until 53000 total millis() we will shake and shoot lines
+        ellipse(400, 600, 100, 100);
+        lineFlurry(10, 200, 600, 300, 600, 400, 650);
+      } else if ((timer - looptime) < 58000 && (timer - looptime) > 55000) {
+        ellipse(400 + (random(-10, 10)), 600 + random(-10, 10), 100, 100);
+        lineFlurry(10, 200, 600, 300, 600, 400, 650);
+      } else if ((timer - looptime) > 58000 && (timer - looptime) < 63000) { // We will burst into our bits and the person will be cut up
+        for (let i = 0; i < 50; i += 1)  {
+          bits[i].update();
+          bits[i].display(random(0, 255), random(0, 25), random(0,25));
+        }
       }
     }
+  }
+  if ((timer - looptime) > 63000 && (timer - looptime) < 65000) {
+    fadeOut += 4;
+    fill(0, 0, 0, fadeOut);
+    rect(0, 0, 2000, 2000);
   }
 }
 
@@ -261,11 +270,11 @@ function sceneTwo() {
   if (abrasivePerson.update() > 400) {
     abrasivePerson.display();
     abrasivePerson = new Person(400, abrasivePerson.update(), 100);
-  } else if ((timer - looptime) < 30000) {
+  } else if ((timer - looptime) < 32000) {
     stroke('red');
     fill('red');
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100); // sphere begins to shake
-  } else if ((timer - looptime) < 35000) {
+  } else if ((timer - looptime) < 37000) {
     stroke('red');
     fill('red');
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
@@ -275,15 +284,18 @@ function sceneTwo() {
     } else {
       r = 100;
     }
-  } else if ((timer - looptime) < 35050 && r > 100 && (timer - looptime) > 35000) {
+  } else if ((timer - looptime) < 37050 && r > 100 && (timer - looptime) > 37000) {
     r = 100;
-  } else if ((timer - looptime) > 35000 && r < 1800 && (timer - looptime) < 39000){
+    fillBool = true;
+  } else if ((timer - looptime) > 37000 && r < 1800 && (timer - looptime) < 41000){
+    fill('red');
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
     drawCircle();
   } else if ((timer - looptime) > 39000 && r != 100) {
     drawCircle();
   } else {
     fill('red');
+    stroke('red');
     circle(400, circHeight, 100);
     lineFlurry(20, 0, width, 0, height, 400, circHeight);
     circHeight += 1;
@@ -306,6 +318,15 @@ function sceneOne() {
         fill(random(255), random(255), random(255), random((opacity - 30 - (timeFade/100 * 2)), opacity - (timeFade/100 * 2)));
       }
       triangle(random(width), random(height), random(width), random(height), random(width), random(height));
+    }
+  } else {
+    if ((circHeight > 0) && (timer - looptime) < 14500) {
+      fill('red');
+      circle(400, circHeight, 100);
+      circHeight -= 3.4;
+    }
+    if ((timer - looptime) > 14950) {
+      circHeight = 400;
     }
   }
 }
@@ -352,15 +373,15 @@ function lineFlurry(amount, xMin, xMax, yMin, yMax, locationX, locationY) { // F
 }
 
 function drawCircle() { // Draws a circle and exapnds its width
-  stroke(255, 0, 0); // Sets our red color stroke
-  if ((timer - looptime) < 35050) { // Determines whether to fill or not to fill the circle
-    noFill();
-  }
-  else {
+  stroke(255, 0, 0);
+  if (fillBool) { // Determines whether to fill or not to fill the circle
     fill('red'); 
   }
-  circle(400, 400, r);
-  if ((timer - looptime) < 39500) {  // Expands or shrinks the r value
+  else {
+    noFill();
+  }
+  circle(400, 400, r); // Sets our red color stroke
+  if ((timer - looptime) < 41000) {  // Expands or shrinks the r value
     r += 4;
   } else {
     r -= 4;
@@ -400,6 +421,9 @@ function resetVars() {
     particlePos[i] = createVector(random(200, 600), random(600, 700));
     particles[i] = new Waves(particlePos[i], random(2, 12));
   }
+
+  fadeOut = 0;
+  fillBool = false;
 }
 
 // Setup function
@@ -413,14 +437,16 @@ function setup() {
 //Draw loop of the project
 function draw() { 
   timer = millis();
-  if (timer - looptime < 13000) {
+  if (timer - looptime < 15000) {
     sceneOne(); // Calls Scene One
-  } else if ((timer - looptime) > 13000 && circHeight != 800) {
+  } else if ((timer - looptime) > 15000 && circHeight != 800) {
     sceneTwo(); // Calls Scene Two
-  } else if (circHeight == 800 && (timer - looptime) < 61500) {
+  } else if (circHeight == 800 && (timer - looptime) < 65500) {
     sceneThree(); // Calls Scene Three
+    fill(0, fadeout);
+    rect(0, 0, 2000, 2000);
   } else { // Loops back through
     resetVars(); // Resets our variables
-    looptime += 61550; // Changes our loop time to work with the loop
+    looptime += 65550; // Changes our loop time to work with the loop
   }
 }
