@@ -234,6 +234,7 @@ function sceneThree() {
     fill('red');
     stroke(0);
     circle(400, fallingHeight, 100);
+    lineFlurry(20, 0, width, 0, height, 400, fallingHeight);
     fallingHeight += 5;
   } else {
     let opacity = random(200, 255);
@@ -267,8 +268,12 @@ function sceneTwo() {
     abrasivePerson.display();
     abrasivePerson = new Person(400, abrasivePerson.update(), 100);
   } else if (millis() < 30000) {
+    stroke('red');
+    fill('red');
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100); // sphere begins to shake
   } else if (millis() < 35000) {
+    stroke('red');
+    fill('red');
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
     if (r >= 100 && r <= 500) {
       drawCircle();
@@ -294,6 +299,8 @@ function sceneTwo() {
 function sceneOne() { 
   background(random(30));
   if (millis() < 13000) {
+    fill(255, 0, 0, 255);
+    circle(400, 400, 100);
     for (let i = 0; i < 100; i++) {
       if (random(0, 50) < 25) {
         noFill();
