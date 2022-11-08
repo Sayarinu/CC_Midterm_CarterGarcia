@@ -36,6 +36,9 @@ let circSize;
 let circHeight;
 let fallingHeight;
 let fade;
+let timeFade;
+let opacity;
+
 
 // Explosion of balls (bits)
 let angle = -180; // Starts the angle at -180 degrees for scene 1
@@ -276,6 +279,7 @@ function sceneTwo() {
     fill('red');
     ellipse(400 + (random(-10, 10)), 400 + random(-10, 10), 100, 100);
     if (r >= 100 && r <= 500) {
+      lineFlurry(10, 0, r/2, 0, r/2, 400, 400);
       drawCircle();
     } else {
       r = 100;
@@ -301,18 +305,14 @@ function sceneOne() {
   if (millis() < 13000) {
     fill(255, 0, 0, 255);
     circle(400, 400, 100);
+    if (millis() - 1000 > timeFade) {
+      timeFade += 1000;
+    }
     for (let i = 0; i < 100; i++) {
       if (random(0, 50) < 25) {
         noFill();
       } else {
-        if (millis() < 9000) {
-          fill(random(255), random(255), random(255));
-        }
-        else if (millis() < 11000) {
-          fill(random(255), random(255), random(255), random(100, 200)); 
-        } else if (millis() < 12500) {
-          fill(random(255), random(255), random(255), random(0, 100)); 
-        }
+        fill(random(255), random(255), random(255), random((opacity - 30 - (timeFade/100 * 2)), opacity - (timeFade/100 * 2)));
       }
       triangle(random(width), random(height), random(width), random(height), random(width), random(height));
     }
@@ -332,17 +332,28 @@ function circularObject(obj) {
 
 function lineFlurry(amount, xMin, xMax, yMin, yMax, locationX, locationY) { // Flurry of lines for scene 1
   const ctx = canvas.getContext('2d');
-  // set line stroke and line width
-  ctx.strokeStyle = "#"+((1<<24)*Math.random()|0).toString(16);
   ctx.lineWidth = 5;
-  
-  // draw a random color line
-  for (let i = 0; i < amount; i++) {
-    ctx.beginPath();
-    ctx.moveTo(locationX, locationY);
-    ctx.lineTo(random(xMin, xMax), random(yMin, yMax));
-    ctx.stroke();
-    ctx.closePath();
+  // set line stroke and line width
+  if (r == 100) {
+    ctx.strokeStyle = "#"+((1<<24)*Math.random()|0).toString(16);
+      
+    // draw a random color line
+    for (let i = 0; i < amount; i++) {
+      ctx.beginPath();
+      ctx.moveTo(locationX, locationY);
+      ctx.lineTo(random(xMin, xMax), random(yMin, yMax));
+      ctx.stroke();
+      ctx.closePath();
+    }
+  } else {
+    ctx.strokeStyle = 'red';
+    for (let i = 0; i < amount; i++) {
+      ctx.beginPath();
+      ctx.moveTo(locationX, locationY);
+      ctx.lineTo(random(400 - r/2, 400 + r/2), random(400 - r/2, 400 + r/2));
+      ctx.stroke();
+      ctx.closePath();
+    }
   }
 }
 
@@ -369,6 +380,8 @@ function resetVars() {
   circSize = 100;
   fallingHeight = 0;
   fade = 255;
+  timeFade = 0;
+  opacity = 255;
 }
 
 // Globally initialized Objects for scene 1
