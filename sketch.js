@@ -253,8 +253,6 @@ function sceneThree() {
   }
   if ((timer - looptime) > 63000 && (timer - looptime) < 65000) {
     fadeOut += 4;
-    fill(0, 0, 0, fadeOut);
-    rect(0, 0, 2000, 2000);
   }
 }
 
@@ -320,12 +318,12 @@ function sceneOne() {
       triangle(random(width), random(height), random(width), random(height), random(width), random(height));
     }
   } else {
-    if ((circHeight > 0) && (timer - looptime) < 14500) {
+    if ((circHeight > 0) && (circHeight != 0)) {
       fill('red');
       circle(400, circHeight, 100);
       circHeight -= 3.4;
     }
-    if ((timer - looptime) > 14950) {
+    else if ((timer - looptime) > 14950) {
       circHeight = 400;
     }
   }
@@ -381,7 +379,7 @@ function drawCircle() { // Draws a circle and exapnds its width
     noFill();
   }
   circle(400, 400, r); // Sets our red color stroke
-  if ((timer - looptime) < 41000) {  // Expands or shrinks the r value
+  if ((timer - looptime) < 41000 && r < 1300) {  // Expands or shrinks the r value
     r += 4;
   } else {
     r -= 4;
