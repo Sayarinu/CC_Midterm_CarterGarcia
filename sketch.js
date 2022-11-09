@@ -443,7 +443,7 @@ function draw() {
     sceneTwo(); // Calls Scene Two
   } else if (circHeight == 800 && (timer - looptime) < 65500) {
     sceneThree(); // Calls Scene Three
-    fill(0, fadeout);
+    fill(0, fadeOut);
     rect(0, 0, 2000, 2000);
   } else { // Loops back through
     resetVars(); // Resets our variables
