@@ -225,7 +225,7 @@ class SceneThreeSpikes {  // Sets our spikes for scene three
 
 // Does the code for scene three
 function sceneThree() {
-  if (timer < 63000) {
+  if ((timer - looptime) < 63000) {
     spikes.display(); // Sets our spikes
     if (fallingHeight < 600) { // Checks if it has fallen onto the saw, if not move the circle down
       fill('red');
@@ -253,6 +253,8 @@ function sceneThree() {
   }
   if ((timer - looptime) > 63000 && (timer - looptime) < 65000) {
     fadeOut += 4;
+    fill(0, 0, 0, fadeOut);
+    rect(0, 0, 2000, 2000);
   }
 }
 
@@ -318,12 +320,12 @@ function sceneOne() {
       triangle(random(width), random(height), random(width), random(height), random(width), random(height));
     }
   } else {
-    if ((circHeight > 0) && (circHeight != 0)) {
+    if ((circHeight > 0) && (timer - looptime) < 14500) {
       fill('red');
       circle(400, circHeight, 100);
       circHeight -= 3.4;
     }
-    else if ((timer - looptime) > 14950) {
+    if ((timer - looptime) > 14950) {
       circHeight = 400;
     }
   }
@@ -379,7 +381,7 @@ function drawCircle() { // Draws a circle and exapnds its width
     noFill();
   }
   circle(400, 400, r); // Sets our red color stroke
-  if ((timer - looptime) < 41000 && r < 1300) {  // Expands or shrinks the r value
+  if ((timer - looptime) < 41000) {  // Expands or shrinks the r value
     r += 4;
   } else {
     r -= 4;
@@ -437,9 +439,9 @@ function draw() {
   timer = millis();
   if (timer - looptime < 15000) {
     sceneOne(); // Calls Scene One
-  } else if ((timer - looptime) > 15000 && circHeight != 800) {
+  } else if ((timer - looptime) > 15000 && circHeight < 800) {
     sceneTwo(); // Calls Scene Two
-  } else if (circHeight == 800 && (timer - looptime) < 65500) {
+  } else if ((timer - looptime) < 65500) {
     sceneThree(); // Calls Scene Three
     fill(0, fadeOut);
     rect(0, 0, 2000, 2000);
